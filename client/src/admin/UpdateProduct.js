@@ -107,6 +107,7 @@ const UpdateProduct = ({ match }) => {
 
     const newPostForm = () => (
         <form className="mb-3" onSubmit={clickSubmit}>
+            <br/>
             <h4>Post Photo</h4>
             <div className="form-group">
                 <label className="btn btn-secondary">
@@ -189,12 +190,21 @@ const UpdateProduct = ({ match }) => {
 
     return (
         <Layout title="Add a new product" description={`G'day ${user.name}, ready to add a new product?`}>
+               <br/>
+              <div className="p-4" >
+            <Link to ="/admin/dashboard" className="text-warning">
+                Back to dashboard
+                </Link>
+        </div>
+        <br/>
             <div className="row">
                 <div className="col-md-8 offset-md-2">
                     {showLoading()}
+                   
+                    {newPostForm()}
+                    <br/>
                     {showSuccess()}
                     {showError()}
-                    {newPostForm()}
                     {redirectUser()}
                 </div>
             </div>

@@ -110,11 +110,9 @@ const Signup = () => {
                 <Menu/>
             </div>
         </div>
-        <div class="row" style={{height:'100vh'}}>
-        <div className="col-6" style={divStyle} >
-           
-           </div>
-       <div className="col-6" style={{padding:'50px',paddingTop:'10px'}}>
+        <div class="row justify-content-center" style={{height:'100vh'}}>
+        
+       <div className="col-md-6 col-sm-12 pt-4" style={{padding:'50px',paddingTop:'10px'}}>
            <div className="row justify-content-center">
            <img className="img-fluid" src={logo} alt="Logo" />
         

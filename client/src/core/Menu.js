@@ -6,7 +6,7 @@ import logo from '../user/logo_s.png';
 import Search from './Search'
 const isActive = (history, path) => {
     if(history.location.pathname === path){
-        return {color:'#ff9900'}
+        return {color:'black'}
     }
     else{
         return {color: 'black'}
@@ -18,8 +18,10 @@ const Menu = ({history}) => (
 
 
 <div >
-    <div className="row">
-        <div className="col-5">
+<div className="row  text-right" >
+        <div className=" col-12 text-center p-1" style={{color:'#fff'}}>
+
+        <div className="col-12 text-right">
         <ul className="nav nav-tabs  ">
         <li className="nav-item">
             <Link className="nav-link" style={isActive(history,'/')} to="/">
@@ -78,18 +80,14 @@ admin_panel_settings
             <Fragment>
                 <li className="nav-item">
             <Link className="nav-link" style={isActive(history,'/signin')}  to="/signin">
-            <span class="material-icons">
-login
-</span>
+            Login
             </Link>
         </li>
 
 
         <li className="nav-item">
             <Link className="nav-link" style={isActive(history,'/signup')}  to="/signup">
-            <span class="material-icons">
-person_add
-</span>
+            Signup
             </Link>
         </li>
         </Fragment>
@@ -100,29 +98,37 @@ person_add
            <Link className="nav-link" style={{cursor: 'pointer', color:'#ffff'}}  onClick={() => signout(() => {
                history.push('/')
            })}>
-             <span style={{color:'black'}} class="material-icons">
-exit_to_app
-</span>
+             <span style={{color:'black'}}>Signout</span>
            </Link>
        </li>
        
            
        )}
-       
+ 
+                <li class="nav-item float-right text-right">
+                <Search/>
+                </li>
+                
+           
+      
     </ul>
-
+   
         </div>
+        
+            
+        </div>
+        </div>
+    <div className="row text-center justify-content-center">
+        
         <div className="col-4">
         <Link className="nav-link" style={isActive(history,'/')} to="/">
-            <img className="img-fluid" src={logo} />
+            <img className="img-fluid" src={logo} style={{height:'60px'}} />
             </Link>
 
         </div>
-        <div className="col-3">
-        <Search/>
-        </div>
+        
     </div>
-    
+   
     
     <div className="row">
         <div className="col-12 justify-content-center text-center">
@@ -161,11 +167,14 @@ exit_to_app
         </div>
     </div>
     <div className="row">
-        <div className="col-12 text-center p-1" style={{backgroundColor:'black',color:'#fff'}}>
-            <h4><b>CRAFTED TO ACCENTUATE ALL YOUR GOOD SIDES</b></h4>
-            
+        <div className="col-12 text-center p-2" style={{backgroundColor:'black',color:'#fff'
+    }}>
+       <b> CRAFTED TO ACCENTUATE ALL YOUR GOOD SIDES</b>
+
         </div>
         </div>
+    
+   
 </div>
 
 

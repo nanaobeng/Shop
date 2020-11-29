@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { getProducts, getBraintreeClientToken, processPayment, createOrder } from './apiCore';
 import { emptyCart } from './cartHelpers';
 import Card from './Card';
+import FlutterWave from './FlutterWave';
 import { isAuthenticated } from '../auth';
+import { useFlutterwave } from 'flutterwave-react-v3';
 import { Link } from 'react-router-dom';
-// import "braintree-web"; // not using this package
-import DropIn from 'braintree-web-drop-in-react';
+
+
 
 const Checkout = ({ products, setRun = f => f, run = undefined }) => {
+    let [deliveryFee, setDF] = useState(0)
     const [data, setData] = useState({
         loading: false,
         success: false,
@@ -16,39 +19,216 @@ const Checkout = ({ products, setRun = f => f, run = undefined }) => {
         instance: {},
         address: ''
     });
+    const userMail= isAuthenticated() && isAuthenticated().user.email;
+    const userName = isAuthenticated() && isAuthenticated().user.name;
+
+    const [deliveryFields, setDev] = useState(
+        {
+            fullname: '',
+            address: '',
+            email:'',
+            phonenumber: '',
+            deliverycountry: '',
+            error: '',
+            success:false
+        }
+    )
+
+    const {fullname,address,deliverycountry,phonenumber , success, error,email} = deliveryFields
+    const handleDev = name => event => {
+
+        setDev({...deliveryFields, error:false, [name]:event.target.value})
+
+    }
+
+    const getTotal = () => {
+        return products.reduce((currentValue, nextValue) => {
+            return currentValue + nextValue.count * nextValue.price ;
+        }, 0);
+    };
+
+  const [values, setValues] = useState({
+    public_key: 'FLWPUBK-0dfd41acb05e3084ad11927bed58af25-X',
+    tx_ref: Date.now(),
+    amount: 1,
+    currency: 'GHS',
+    
+    payment_options: 'card,mobilemoney',
+    customer: {
+      email: userMail,
+      phonenumber: phonenumber,
+      name: fullname,
+    },
+    customizations: {
+      title: 'Ewemocha',
+      description: 'Payment for items in cart',
+      logo: 'https://st2.depositphotos.com/4403291/7418/v/450/depositphotos_74189661-stock-illustration-online-shop-log.jpg',
+    },
+  })
 
     const userId = isAuthenticated() && isAuthenticated().user._id;
     const token = isAuthenticated() && isAuthenticated().token;
+    const handleFlutterPayment = useFlutterwave(values);
 
-    const getToken = (userId, token) => {
-        getBraintreeClientToken(userId, token).then(data => {
-            if (data.error) {
-                console.log(data.error);
-                setData({ ...data, error: data.error });
-            } else {
-                console.log(data);
-                setData({ clientToken: data.clientToken });
-            }
-        });
-    };
+
+
+
 
     useEffect(() => {
-        getToken(userId, token);
-    }, []);
+     
+        setValues({...values, amount : (getTotal()+ deliveryFee)  })
+    }, [deliveryFee]);
+
+    useEffect(() => {
+        
+        if(deliverycountry == 'uk'){
+            setDF(deliveryFee = 230)
+        }
+        else if(deliverycountry == 'us'){
+            setDF(deliveryFee = 270)
+        }
+        else if(deliverycountry == 'canada'){
+            setDF(deliveryFee = 280)
+        }
+        else if(deliverycountry == 'france'){
+            setDF(deliveryFee = 230)
+        }
+        else if(deliverycountry == 'ghana'){
+            setDF(deliveryFee = 25)
+        }
+        else{
+            setDF(deliveryFee = 0)
+        }
+     
+        
+    }, [deliverycountry]);
+
+
 
     const handleAddress = event => {
         setData({ ...data, address: event.target.value });
     };
 
-    const getTotal = () => {
-        return products.reduce((currentValue, nextValue) => {
-            return currentValue + nextValue.count * nextValue.price;
-        }, 0);
-    };
+    const OrderForm = () => {
+        return getTotal() > 0 ? (
+            <div>
+
+        <form>
+          <div className="row">
+
+          <div className="col-12">
+              <div className="form-group">
+                <label className="text-muted">Full Name :</label>
+                
+                <input onChange={handleDev('fullname')} type="text" className="form-control" value={fullname}/>
+            </div>
+
+              </div>
+              <div className="col-12">
+              <div className="form-group">
+            <label className="text-muted">Delivery Country</label>
+            <select onChange={handleDev('deliverycountry')} className="form-control" value={deliverycountry} >
+            <option>Please select</option>
+            <option value ="uk">United Kingdom</option>
+            <option value ="us">United States</option>
+            <option value ="canada">Canada</option>
+            <option value ="france">France</option>
+            <option value ="ghana">Ghana</option>
+            <option value ="other">Other</option>
+
+            </select>
+            
+        </div>
+              </div>
+              <div className="col-12">
+              <div className="form-group">
+                <label className="text-muted">Delivery Address :</label>
+               <textarea row="5"  onChange={handleDev('address')} className="form-control" value={address} ></textarea>
+            </div>
+
+              </div>
+
+<div className="col-12">
+<div className="form-group">
+                <label className="text-muted">Phone Number :</label>
+                <input onChange={handleDev('phonenumber')} type="text" className="form-control" value={phonenumber}/>
+            </div>
+
+</div>
+
+
+              
+          </div>
+
+            
+
+
+           
+           
+          
+           
+        </form>
+        { address != "" && phonenumber != "" && fullname != "" ? 
+<button className="btn btn-warning"
+onClick={() => {
+
+
+  handleFlutterPayment({
+     
+    callback: (response) => {
+      console.log(response);
+   
+      if(response.status === 'successful'){
+        const createOrderData = {
+            products: products,
+            transaction_id: response.transaction_id,
+            amount: response.amount,
+            address: address,
+            name: fullname,
+            email: userMail,
+            delivery_fee : deliveryFee,
+            delivery_country : deliverycountry
+
+
+        };
+
+        createOrder(userId, token, createOrderData)
+            .then(response => {
+                emptyCart(() => {
+                    setRun(!run); // run useEffect in parent Cart
+                    console.log('Payment was successful ');
+                    setData({
+                        loading: false,
+                        success: true
+                    });
+                });
+            })
+            .catch(error => {
+                console.log(error);
+                setData({ loading: false });
+            });
+
+    }
+
+
+    },
+    onClose: () => {},
+  });
+}}
+>
+   
+    
+Proceed to Payment
+</button> : '' }
+</div>
+    ) : ''
+}
 
     const showCheckout = () => {
-        return isAuthenticated() ? (
-            <div>{showDropIn()}</div>
+        return isAuthenticated()  ? (
+            <div className="row text-center justify-content-center">
+            
+            </div>
         ) : (
             <Link to="/signin">
                 <button className="btn btn-primary">Sign in to checkout</button>
@@ -120,34 +300,7 @@ const Checkout = ({ products, setRun = f => f, run = undefined }) => {
             });
     };
 
-    const showDropIn = () => (
-        <div onBlur={() => setData({ ...data, error: '' })}>
-            {data.clientToken !== null && products.length > 0 ? (
-                <div>
-                    <div className="gorm-group mb-3">
-                        <label className="text-muted">Delivery address:</label>
-                        <textarea
-                            onChange={handleAddress}
-                            className="form-control"
-                            value={data.address}
-                            placeholder="Type your delivery address here..."
-                        />
-                    </div>
-
-                    <DropIn
-                        options={{
-                            authorization: data.clientToken
-                            
-                        }}
-                        onInstance={instance => (data.instance = instance)}
-                    />
-                    <button onClick={buy} className="btn btn-success btn-block">
-                        Pay
-                    </button>
-                </div>
-            ) : null}
-        </div>
-    );
+  
 
     const showError = error => (
         <div className="alert alert-danger" style={{ display: error ? '' : 'none' }}>
@@ -164,12 +317,19 @@ const Checkout = ({ products, setRun = f => f, run = undefined }) => {
     const showLoading = loading => loading && <h2 className="text-danger">Loading...</h2>;
 
     return (
-        <div>
-            <h2>Total: ${getTotal()}</h2>
+        <div className="p-4" style={{borderColor:"black",borderStyle:'solid',borderWidth:'3px'}}>
+             <b> Delivery Fee: ${deliveryFee}</b>
+             <br/>
+             <b> Total: ${getTotal()+ deliveryFee}</b>
+             <br/>
+             {isAuthenticated() && OrderForm()}
+ 
+         
             {showLoading(data.loading)}
             {showSuccess(data.success)}
             {showError(data.error)}
             {showCheckout()}
+
         </div>
     );
 };

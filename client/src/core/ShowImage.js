@@ -3,7 +3,7 @@ import {API} from '../config'
 
 const ShowImage = ({item, url}) => (
     <div className="product-img">
-        <img src={`${API}${url}/photo/${item._id}`} alt={item.name} className="mb-3" style={{maxHeight: '300px',minHeight: '300px', maxWidth: '100%',minWidth: '100%'}} />
+        <img src={`${API}${url}/photo/${item._id}`} alt={item.name} className="mb-3" style={{maxHeight: '450px',minHeight: '450px', maxWidth: '100%',minWidth: '100%'}} />
        
     </div>
 )

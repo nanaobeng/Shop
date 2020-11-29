@@ -6,6 +6,7 @@ import Checkbox from './Checkbox'
 import CollectionsBox from './CollectionsBox'
 import { prices} from './fixedPrices'
 import Radiobox from './RadioBox'
+import Search from './Search'
 
 
 
@@ -15,7 +16,7 @@ import Radiobox from './RadioBox'
 const Shop = () => {
 
     const[myFilters, setMyFilters] = useState({
-        filters: { category: [],price: [], collections: []}
+        filters: { category: [],price: [], collections: [] }
     })
 
 
@@ -80,7 +81,11 @@ const Shop = () => {
     const loadMoreButton = () => {
         return (
             size > 0 && size >= limit && (
-                <button onClick={loadMore} className="btn btn-warning mb-5">Load more</button>
+      
+                    <span onClick={loadMore} className=" btn btn-outline-dark text-center justify-content-center  ">Load more</span>
+                
+
+                
             )
         )
     }
@@ -139,13 +144,14 @@ const Shop = () => {
 
 <div class="row ">
 
-  <div class="col-3">
+  <div class="col-md-3 col-sm-6">
 
       <div className="row">
           <div className="col-12">
               <div className="card">
 
                   <div className="card-body p-4">
+                     
                   <b>Collections</b>
                       <hr style={{borderColor:'black'}}/>
                   <CollectionsBox collection={collection}  handleFilters={ filters =>
@@ -181,19 +187,43 @@ const Shop = () => {
 
 
 
-  <div class="col-9">
+  <div class="col-md-9 col-sm-6">
+      {filteredResults.length > 0 ?
   <div className="row">
   {filteredResults.map((product,i)=> (
                     
-                    <div key={i} className="col-4 mb-3">
+                    <div key={i} className="col-md-4 col-sm-12 mb-3">
                     <Card  product={product} />
                     </div>
                         
     
 ))}        
         <hr/>
-                  {loadMoreButton()}             
+        <div className="row text-center justify-content-center">
+                    <div className="col-12 text-center justify-content-center">
+                  {loadMoreButton()}  
+                  </div>
+                  </div>           
       </div>
+
+      : 
+      
+      
+              
+     
+<div class="container  ">
+<div className="row ">
+    <div className="col-12  " style={{height:'100vh'}}>
+
+  <br/>
+  <br/>
+                                 
+<b>No products found.</b>
+</div>
+</div>
+</div>
+      
+      }
   </div>
  
 

@@ -1,5 +1,5 @@
 import React , {useState, useEffect} from 'react';
-
+import {Link} from 'react-router-dom'
 import { getCategories , list } from "./apiCore";
 import Card from './Card'
 
@@ -39,7 +39,9 @@ useEffect(() => {
 }, []);
 
 const searchData = () => {
-   //console.log(search,category)
+
+ 
+   console.log(search,category)
    if(search){
        list({search: search || undefined, category})
        .then(response => {
@@ -60,7 +62,8 @@ const searchData = () => {
 
 const searchSubmit = (e) => {
 e.preventDefault()
-searchData()
+
+window.location.replace(`/search/${search}`);
 
 
 
@@ -121,15 +124,11 @@ const searchForm = () => (
 
     return (
         <div>
-            <br/>
-            <div className="container mb-3">
+ 
                 {searchForm()}
                 
-            </div>
-            <div className="container-fluid mb-3">
-                {searchedProducts(results)}
-                
-            </div>
+        
+         
         </div>
     )
 }

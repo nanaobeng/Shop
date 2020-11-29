@@ -29,6 +29,18 @@ const productSchema = new mongoose.Schema({
     quantity: {
         type:Number
     },
+    isSmall: {
+        type: Boolean,
+        default:true
+    },
+    isLarge: {
+        type: Boolean,
+        default:true
+    },
+    isMedium: {
+        type: Boolean,
+        default:true
+    },
     collections:{
         type:ObjectId,
         ref: 'Collection'

@@ -18,6 +18,25 @@ export const createCategory = (userId, token, category) => {
         });
 };
 
+
+export const createCollection = (userId, token, collection) => {
+    return fetch(`${API}collection/create/${userId}`, {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(collection)
+    })
+        .then(response => {
+            return response.json();
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
 export const updateCategory = (categoryId, userId, token, category) => {
     return fetch(`${API}category/${categoryId}/${userId}`, {
         method: 'PUT',
@@ -124,7 +143,7 @@ export const getStatusValues = (userId, token) => {
         .catch(err => console.log(err));
 };
 
-export const updateOrderStatus = (userId, token, orderId, status) => {
+export const updateOrderStatus = (userId, token, orderId, status ,name,transaction) => {
     return fetch(`${API}order/${orderId}/status/${userId}`, {
         method: 'PUT',
         headers: {
@@ -132,7 +151,7 @@ export const updateOrderStatus = (userId, token, orderId, status) => {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ status, orderId })
+        body: JSON.stringify({ status, orderId  , name,transaction})
     })
         .then(response => {
             return response.json();

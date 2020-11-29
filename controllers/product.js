@@ -33,9 +33,9 @@ exports.create = (req, res) => {
             });
         }
         // check for all fields
-        const { name, description, price, category, quantity, shipping ,collections} = fields;
+        const { name, description, price, category, quantity, shipping ,collections,isSmall,isLarge,isMedium} = fields;
 
-        if (!name || !description || !price || !category || !quantity || !shipping ) {
+        if (!name || !description || !price || !category || !quantity || !shipping || !isSmall || !isMedium || !isLarge ) {
             return res.status(400).json({
                 error: 'All fields are required'
             });
@@ -130,7 +130,7 @@ exports.update = (req, res) => {
 
 exports.list = (req, res) => {
     let order = req.query.order ? req.query.order : 'asc';
-    let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
+    let sortBy = req.query.sortBy ? req.query.sortBy : 'name';
     let limit = req.query.limit ? parseInt(req.query.limit) : 6;
 
     Product.find()
@@ -154,7 +154,7 @@ exports.list = (req, res) => {
  */
 
 exports.listRelated = (req, res) => {
-    let limit = req.query.limit ? parseInt(req.query.limit) : 6;
+    let limit = req.query.limit ? parseInt(req.query.limit) : 3;
 
     Product.find({ _id: { $ne: req.product }, category: req.product.category })
         .limit(limit)

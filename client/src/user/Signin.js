@@ -83,8 +83,13 @@ const Signin = () => {
             </div>
             <br/>
             <div className="row">
-            <div className="col-12 justify-content-center text-center">
+            <div className="col-6 justify-content-center text-left">
+
                     <p style={{color:'gray'}}> Don't have an account ? <span style={{color:'black'}} ><Link to="/signup"><u>Sign up here.</u></Link></span></p>
+                    </div>
+
+                    <div className="col-6  justify-content-center text-right">
+                    <p style={{color:'gray'}}> <span style={{color:'black'}} ><Link to="/forgot-password"><u>Forgot Password?</u></Link></span></p>
                     </div>
                 
             </div>
@@ -136,11 +141,9 @@ const Signin = () => {
                 <Menu/>
             </div>
         </div>
-        <div class="row" style={{height:'100vh'}}>
-             <div className="col-6" style={divStyle} >
-                
-                </div>
-            <div className="col-6" style={{padding:'50px'}}>
+        <div class="row justify-content-center" style={{height:'100vh'}}>
+             
+            <div className="col-md-10 col-sm-12" style={{padding:'50px'}}>
                 <div className="row justify-content-center">
                 <img className="img-fluid" src={logo} alt="Logo" />
                 <br/>

@@ -2,8 +2,12 @@ const User = require("../models/user")
 const { Order, CartItem } = require('../models/order');
 const { errorHandler } = require('../helpers/dbErrorHandler');
 // sendgrid for email npm i @sendgrid/mail
-//const sgMail = require('@sendgrid/mail');
-//sgMail.setApiKey('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');
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey('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');
+const mailgun = require("mailgun-js")
+const DOMAIN = 'sandbox10ad0a8fe2524c4fa4290820764953d3.mailgun.org'
+const mg = mailgun({apiKey:process.env.MAILGUN_API_KEY, domain: DOMAIN})
+
 
 exports.orderById = (req, res, next, id) => {
     Order.findById(id)
@@ -34,8 +38,8 @@ exports.create = (req, res) => {
         // order.products.length
         // order.amount
         const emailData = {
-            to: 'kaloraat@gmail.com',
-            from: 'noreply@ecommerce.com',
+            to: 'nanaobengmarnu@gmail.com',
+            from: 'noreply@ewemocha.com',
             subject: `A new order is received`,
             html: `
             <p>Customer name:</p>
@@ -73,6 +77,35 @@ exports.updateOrderStatus = (req, res) => {
             return res.status(400).json({
                 error: errorHandler(err)
             });
+        }
+        else{
+            const data = {
+                from: 'noreply@mocha.com',
+                to: 'nanaobengmarnu@gmail.com',
+                subject: 'Updated Order Status',
+                html: `
+                <p>Hi, ${req.body.name}</p>
+                <br/>
+                <p> The status of your order with transaction ID <b>${req.body.transaction}</b> has been changed to '${req.body.status}'</p>
+                
+               <br/>
+               <br/>
+               <p>Regards,</p>
+               <p>Ewemocha</p>
+        
+                `
+            }
+            mg.messages().send(data,function (error,body){
+                if(error){
+                    
+                    console.log(error.message)
+                
+
+                }
+                
+                  console.log( 'email has been sent')
+             
+            })
         }
         res.json(order);
     });

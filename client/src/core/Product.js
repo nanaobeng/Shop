@@ -1,8 +1,9 @@
 import React , {useState, useEffect} from 'react';
 import Layout from './Layout'
 import { read ,listRelated } from "./apiCore";
-import Card from './Card'
-import ShowImage from './ShowProductImage'
+import Card from './ProductCard'
+import RelatedCard from './Card'
+import ShowImage from './ShowImage'
 
 
 
@@ -11,6 +12,7 @@ const Product = (props) => {
     const [product , setProduct] = useState({})
     const [relatedProduct, setRelatedProduct] = useState([])
     const [error , setError] = useState(false)
+    let [loading,setLoading] = useState(false)
 
 
 
@@ -28,6 +30,7 @@ const Product = (props) => {
                     }
                     else{
                         setRelatedProduct(data)
+                        setLoading({loading : true})
                     }
                 })
             }
@@ -49,61 +52,61 @@ const Product = (props) => {
             product.description &&
             product.description.substring(0,100)} 
         className="container-fluid justify-content-center ">
-            
-       
-       <div className="row p-4 justify-content-center ">
-           <div className="col-12">
-               <div className="row">
-               <div className="col-4" style={{height:'600px'}}>
-               <ShowImage item={product} url="product" style={{width:'100%',height:'400px'}}/>
-               
 
-               </div>
-               <div className="col-5">
-        <h2><b>{product.name}</b></h2>
-        <span style={{color:'grey'}}>{product.description}</span>
-        <br/>
-        <br/>
-        <h4 style={{color:'red'}}>${product.price}</h4>
-        <br/>
-  
-        <div className="row">
-            
-                <div className="col-2">
-                    <b>Size</b>
-                </div>
-                <div className="col-2 ">
-           
-                </div>
-           
-        </div>
 
-        <br/>
-        <div className="row">
-            <div className="col-12 pt-2 text-center" style={{height:'40px',backgroundColor:'green',color:'#fff'}}>
-                    <b>ADD TO CART</b>
-            </div>
-        </div>
-               </div>
-               </div>
-          
+        {loading ? <div className="row p-4 justify-content-center ">
+           
+           <div class="col-12">
+           <div className="col-8"></div>
+                    {product && product.description && <Card product={product} showViewProductButton={false} />}
+            
            </div>
-
-           <div className="col-12">
+{relatedProduct.length > 0 ?   <div className="col-12">
            <br/>
+
 <hr/> 
-               <h4>Related Products</h4>
+               <h4 className="text-center" style={{color:'gray'}}>Related Products</h4>
                <hr/> 
+               <div className="row">
+                   
                {relatedProduct.map((p,i) => (
-                   <div key={i} className="col-4 mb-3">
-                       <Card key={i} product={p} />
+                   <div key={i} className="col-md-4 col-sm-12 ">
+                       <RelatedCard key={i} product={p} />
                        </div>
     ))}
-           
-       </div>
+           </div>
+       </div> : ''}
+         
        
        </div>
-
+  :      
+  <div class="container justify-content-center text-center p-4">
+  <div className="row justify-content-center text-center p-4">
+      <div className="col-12 justify-content-center text-center p-4" style={{height:'100vh'}}>
+  
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+                                          
+  <div class="spinner-grow text-muted"></div>
+  <div class="spinner-grow text-primary"></div>
+  <div class="spinner-grow text-success"></div>
+  <div class="spinner-grow text-info"></div>
+  <div class="spinner-grow text-warning"></div>
+  <div class="spinner-grow text-danger"></div>
+  <div class="spinner-grow text-secondary"></div>
+  <div class="spinner-grow text-dark"></div>
+  <div class="spinner-grow text-light"></div>
+  </div>
+  </div>
+  </div> } 
+       
+       
       
 
         </Layout>

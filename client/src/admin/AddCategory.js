@@ -60,12 +60,12 @@ const AddCategory = () => {
 
     const showSuccess = () => {
         if(success) {
-            return <h3 className="text-success"> {name} is created</h3>
+            return <h3 className="text-success alert alert-success"> {name} is created</h3>
         }
     }
     const showError = () => {
         if(error) {
-            return <h3 className="text-danger"> category should be unique</h3>
+            return <h3 className="text-danger alert alert-danger"> Category should be unique</h3>
         }
     }
 
@@ -83,11 +83,14 @@ const AddCategory = () => {
 
         <Layout title="Add Category" description={ `Hello ${user.name}`} className="container-fluid">
             
-        <div className="row">
-            <div className="col-md-8 offset-md-3">
+        <div className="row p-4">
+            <div className="col-md-8 p-4 offset-md-3">
+                
+                {newCategoryForm()}
+                <br/>
                 {showSuccess()}
                 {showError()}
-                {newCategoryForm()}
+
                 {goBack()}
                 </div>
              

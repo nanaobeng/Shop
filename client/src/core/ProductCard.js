@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import ShowProductImage from './ShowProductImage';
+import ShowImage from './ShowProductImage';
 import moment from 'moment';
 import { addItem, updateItem, removeItem } from './cartHelpers';
 
@@ -16,6 +16,14 @@ const ProductCard = ({
 }) => {
   const [redirect, setRedirect] = useState(false);
   const [count, setCount] = useState(product.count);
+  const [values,setValues] = useState({
+    size:''})
+    const {
+
+     
+      size
+
+  } = values;
 
   const showViewButton = showViewProductButton => {
     return (
@@ -30,8 +38,14 @@ visibility
   };
   const addToCart = () => {
     // console.log('added');
-    addItem(product, setRedirect(true));
+    addItem(product,values.size, setRedirect(true));
   };
+
+  const handleSize = name => event => {
+    const value =  event.target.value
+
+    setValues({ ...values, [name]: value})
+}
 
   const shouldRedirect = redirect => {
     if (redirect) {
@@ -42,10 +56,10 @@ visibility
   const showAddToCartBtn = showAddToCartButton => {
     return (
       showAddToCartButton && (
-       
-          <span onClick={addToCart} class="btn btn-outline-warning mt-2 mb-2 card-btn-1 material-icons">
-add_shopping_cart
-</span>
+        values.size != "" ? <span onClick={addToCart} className="btn btn-dark" style={{width:'100%'}}> Add to Cart </span>
+        : <span onClick={addToCart} className="btn btn-dark" style={{width:'100%',pointerEvents:'none'}} disabled> Add to Cart </span>
+      
+        
        
       )
     );
@@ -98,52 +112,88 @@ add_shopping_cart
   };
   return (
  <div>
-
-<div className="row p-4">
-           <div className="col-12">
+   <div className="row p-4 justify-content-center">
+   <div className="col-10 p-2 justify-content-center">
                <div className="row">
-               <div className="col-4" style={{height:'600px'}}>
-               {shouldRedirect(redirect)}
-             <ShowProductImage item={product} url="product" style={{width:'100%'}}/>
+               <div className="col-md-6 col-sm-12" style={{height:'600px'}}>
+               <ShowImage item={product} url="product" style={{width:'100%',height:'400px'}}/>
                
 
                </div>
-               <div className="col-8">
-        <h2><b>{product.name}</b></h2>
-        <span style={{color:'grey'}}>{product.description}</span>
-        <br/>
-        <br/>
-        <h4 style={{color:'red'}}>${product.price}</h4>
-        <br/>
-  
-        <div className="row">
+               <div className="col-md-6 col-sm-12 pt-4">
+         <div class="product__details__text">
+                        <h3>{product.name} </h3>
+                        Category: {product.category.name}
+                    
+                        <div class="product__details__price">GH¢  {product.price}</div>
+                      
+                        <p>{product.description}</p>
+                        <div class="product__details__button">
+                        <div className="row">
+                             <div className="col-12">
+                           <div className="form-group">
+            <label className="text-muted">Size</label>
+            <select onChange={handleSize('size')} name='size' className="form-control" value={size} >
+            <option>Please select</option>
+            {product.isSmall ?  <option value ="S">S</option> : ''}
+            {product.isMedium ?  <option value ="M">M</option> : ''}
+            {product.isLarge ?  <option value ="L">L</option> : ''}
+           
+
+            </select>
             
-                <div className="col-2">
-                    <b>Size</b>
-                </div>
-                <div className="col-2 ">
-           
-                </div>
-           
         </div>
-
-        <br/>
-        <div className="row">
-            <div className="col-7 pt-2 text-center" style={{height:'40px',backgroundColor:'green',color:'#fff'}}>
-                    <b>ADD TO CART</b>
-            </div>
         </div>
-        <div className="row justify-content-center">
-        
-
-        {showAddToCartBtn(showAddToCartButton)}
-
-    
-        </div>
-               </div>
+                           </div>
+                        {showAddToCartBtn(showAddToCartButton)}
+                        {shouldRedirect(redirect)}
+                           
+                        </div>
+                        <div class="product__details__widget">
+                            <ul>
+                                <li>
+                                    <span>Availability:</span>
+                                    <div class="stock__checkbox">
+                                        <label for="stockin">
+                                           {product.quantity > 0 ? ' In Stock' : 'Out of Stock'}
+                                            <input type="checkbox" id="stockin"/>
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    </div>
+                                </li>
+                            
+                                <li>
+                                    <span>Available sizes:</span>
+                                    <div class="size__btn">
+                       
+                                        <label for="s-btn">
+                                        {product.isSmall &&  <input type="radio" id="s-btn" value="S"/>}
+                                            S
+                                        </label>
+                                        <label for="m-btn">
+                                        {product.isMedium &&  <input type="radio" id="m-btn" value="M"/>}
+                                            M
+                                        </label>
+                                        <label for="l-btn">
+                                           
+                                            {product.isLarge &&  <input type="radio" id="l-btn" value="L"/>}
+                                            L
+                                        </label>
+                                    </div>
+                                </li>
+                                
+                            </ul>
+                        </div>
+                    </div>
+         </div>
+              
                </div>
           
            </div>
+   </div>
+
+<div className="row p-4">
+          
 
           
        

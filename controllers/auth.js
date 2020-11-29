@@ -8,6 +8,27 @@ const DOMAIN = 'sandbox10ad0a8fe2524c4fa4290820764953d3.mailgun.org'
 const mg = mailgun({apiKey:process.env.MAILGUN_API_KEY, domain: DOMAIN})
 
 
+
+exports.createadmin = (req,res) => {
+    //console.log("req.body", req.body)
+    const user = new User(req.body)
+    user.save( (err,user)  => {
+
+        if(err){
+            return res.status(400).json({
+                err : errorHandler(err)
+            })
+        }
+        user.salt = undefined
+        user.hashed_password = undefined
+        res.json({
+            user
+        })
+
+    })
+
+};
+
 exports.signup = (req,res) => {
     //console.log("req.body", req.body)
     const user = new User(req.body)
@@ -34,10 +55,10 @@ exports.signin = (req,res) =>{
 
     const {email,password} = req.body
 
-    User.findOne({email}, (err,user) => {
-        if( err || !user){
+    User.findOne({email}, (error,user) => {
+        if(!user){
             return res.status(400).json({
-                err: "User with specified email does not exists. Please signup"
+                error: "Invalid Credentials"
             });
         }
             if(!user.authenticate(password)){
@@ -108,10 +129,17 @@ exports.forgotPassword = (req,res) => {
     const data = {
         from: 'noreply@mocha.com',
         to: email,
-        subject: 'Account Activation Link',
+        subject: 'Reset Password',
         html: `
-        <h2>Please click the link to rest your password</h2>
-        <p>${process.env.CLIENT_URL}/reset-password/${token}</p>
+        <p>Hi,</p>
+        <br/>
+        <p>Please click the link below and copy the temporary token to succesfully reset your password.</p>
+        <p>Token : ${token}</p>
+        <p>Reset link : <a href="${process.env.CLIENT_URL}/reset-password/"> Click Here</a></p>
+       <br/>
+       <br/>
+       <p>Regards,</p>
+       <p>Ewemocha</p>
 
         `
     };

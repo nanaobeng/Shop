@@ -98,9 +98,9 @@ add_shopping_cart
   };
   return (
  
-    <div className="card">
-      <div className="card-body">
-      {showStock(product.quantity)}<br/>
+    <div>
+   
+    <br/>
         {shouldRedirect(redirect)}
         <div className="row">
         <div className="col-12">
@@ -109,16 +109,21 @@ add_shopping_cart
         </div>
         <div className="row">
           <div className="col-12 text-center">
-          <span className="btn"><b className="text-center">{product.name}</b></span>
+          <span style={{color:'grey',fontSize:'12px'}}>{product.category.name}</span><br/>
+          <span>
+          <Link to={`/product/${product._id}`} style={{fontSize:'23px',color:'black'}} className="mr-2 text-center">
+          <b>{product.name}</b>
+        </Link></span>
 
           </div>
         </div>
         <div className="row">
-          <div className="col-12 text-center">
-          $ {product.price}
+          <div className="col-12 text-center " style={{color:'grey'}}>
+          GH¢ {product.price}
 
           </div>
         </div>
+        
         
         
 
@@ -127,15 +132,13 @@ add_shopping_cart
         
         <br />
 <div className="row justify-content-center">
-        {showViewButton(showViewProductButton)}
-
-        {showAddToCartBtn(showAddToCartButton)}
+       
 
         {showRemoveButton(showRemoveProductButton)}
 
         {showCartUpdateOptions(cartUpdate)}
         </div>
-      </div>
+      
       </div>
  
   );

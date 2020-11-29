@@ -12,13 +12,16 @@ const AddProduct = () => {
         name:'',
         description: '',
         price: '',
-        collection: ['1'],
+        collection: [],
         collections : '',
         categories: [],
         category: '',
         shipping:'',
         quantity: '',
         photo:'',
+        isSmall:'',
+        isLarge:'',
+        isMedium:'',
         
     loading : false ,
 error : '',
@@ -37,6 +40,9 @@ formData: ''
        collection,
         shipping,
         quantity,
+        isLarge,
+        isMedium,
+        isSmall,
      
     loading ,
 error ,
@@ -53,17 +59,22 @@ const init = () => {
         if(data.error){
         setValues({ ...values, error: data.error})
         }else{
-            setValues({...values, categories: data, formData: new FormData()})
+
+            getCollections()
+            .then(collection_list => {
+                if(collection_list.error){
+                setValues({ ...values, error: collection_list.error})
+                }else{
+                    setValues({...values, categories: data,collection: collection_list, formData: new FormData()})
+                }
+            })
+
+            
         }
     })
-    getCollections()
-    .then(collection_list => {
-        if(collection_list.error){
-        setValues({ ...values, error: collection_list.error})
-        }else{
-            setValues({...values, collection: collection_list, formData: new FormData()})
-        }
-    })
+   
+ 
+   
 
    
 }
@@ -119,6 +130,8 @@ const clickSubmit = (event) => {
 
 const newPostForm = () => (
     <form className="mb-3" onSubmit={clickSubmit}>
+        <br/>
+        <br/>
         <h4>Post Photo</h4>
         <div className="form-group">
             <label className="btn btn-outline-secondary"> 
@@ -188,6 +201,39 @@ const newPostForm = () => (
             
         </div>
 
+        <div className="form-group">
+            <label className="text-muted">Small Size Available?</label>
+            <select onChange={handleChange('isSmall')} className="form-control" value={isSmall} >
+            <option>Please select</option>
+            <option value ="1">Yes</option>
+            <option value ="0">No</option>
+
+            </select>
+            
+        </div>
+
+        <div className="form-group">
+            <label className="text-muted">Medium Size Available?</label>
+            <select onChange={handleChange('isMedium')} className="form-control" value={isMedium} >
+            <option>Please select</option>
+            <option value ="1">Yes</option>
+            <option value ="0">No</option>
+
+            </select>
+            
+        </div>
+
+        <div className="form-group">
+            <label className="text-muted">Large Size Available</label>
+            <select onChange={handleChange('isLarge')} className="form-control" value={isLarge} >
+            <option>Please select</option>
+            <option value ="1">Yes</option>
+            <option value ="0">No</option>
+
+            </select>
+            
+        </div>
+
         <button className="btn btn-outline-primary"> Create Product</button>
 
 
@@ -224,13 +270,26 @@ const showLoading = () => (
     return (
 
         <Layout title="Add Product" description={ `Hello ${user.name}`} className="container-fluid">
-            
+            <br/>
+              <div >
+            <Link to ="/admin/dashboard" className="text-warning">
+                Back to dashboard
+                </Link>
+        </div>
         <div className="row">
             <div className="col-md-8 offset-md-3">
-                {showError()}
-                {showSuccess()}
+               
                 {showLoading()}
               {newPostForm()}
+              <br/>
+              {showError()}
+              <br/>
+                {showSuccess()}
+                <br/>
+            
+        <br/>
+        <br/>
+
                 </div>
              
             
